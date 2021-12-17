@@ -1,164 +1,149 @@
-﻿#include <iostream>
+#include <iostream>
+#include <ctime>
 
 using namespace std;
 
+class Stack {
+    int * arr;
+    unsigned int size;
 
-void PrintArray(int* arr, int size) {
-    for (int i = 0; i < size; i++)
-    {
-        cout << arr[i] << " ";
-    }
-}
-
-void Push(int*& arr, int& size, int value) {
-    int new_size = size + 1;
-    int* help = new int[new_size];
-    for (int i = 0; i < size; i++)
-    {
-        help[i] = arr[i];
-    }
-    help[size] = value;
-    size++;
-
-    delete[] arr;
-
-    arr = help;
-
-}
-
-int Pop(int*& arr, int& size) {
-    if (size == 0)
-        return NULL;
-    int new_size = size - 1;
-    int* help = new int[new_size];
-    int rtrn = arr[size - 1];
-    size--;
-
-
-    for (int i = 0; i < size; i++)
-    {
-        help[i] = arr[i];
+public:
+    Stack(int _size) {
+        size = 0;
+        arr = new int[_size];
     }
 
-    delete[] arr;
-
-    arr = help;
-    return rtrn;
-
-}
-
-void Add(int*& arr, int& size, int value) {
-
-    int new_size = size + 1;
-    int* help = new int[new_size];
-
-
-    for (int i = 0; i < size; i++)
-    {
-        help[i+1] = arr[i];
+    ~Stack(){
+        delete [] arr;
     }
-    help[0] = value;
-    size++;
-    delete[] arr;
-
-    arr = help;
 
 
-}
+    bool isEmpty() {
+        return(size == 0) ? true : false;
+    }
 
 
-int Peek(int* arr, int size) {
-    return arr[size - 1];
-}
+    void Push(int value) {
+        
+        arr[size] = value;
+        size++;
 
-void InsertSort(int* arr, int size) {
-    for (int i = 1; i < size; i++) {
-        for (int j = i; j >= 0; j--)
+    }
+
+
+    int Pop() {
+        if (size == 0) 
+            return NULL;   
+
+        int x = size - 1;
+        size--;
+        return arr[x];
+    }
+
+
+    int Peek() {
+        if (size == 0)
+            return NULL;
+
+        int x = size - 1;
+
+        return arr[x];
+    }
+
+
+    void Fill(int needed_size) {
+        srand(time(0));
+        for (int i = 0; i < needed_size; i++)
         {
-            if (j == 0) break;
-            if (arr[j] < arr[j - 1]) {
-                int s = arr[j];
-                arr[j] = arr[j - 1];
-                arr[j - 1] = s;
+            int n = rand() % 100 + 1;
+            Push(n);
+        }
+        size = needed_size;
+
+    }
 
 
+    void Print() {
+
+        for (int i = 0; i < size; i++)
+            cout << arr[i] << " ";
+        cout << "\n";
+     
+    }
+
+
+    void Swap(int indDown) {
+        int i = size - 1;
+        int n_size = 0;
+        while (i != indDown) {
+            n_size++;
+            i -= 1;
+        }
+        Stack help(n_size);
+        i = size - 1;
+        while (i != indDown) {
+            help.Push(Pop());
+            i -= 1;
+        }
+        int x = Pop();
+        Push(help.Pop());
+        Push(x);
+
+        while (!help.isEmpty()) {
+            Push(help.Pop());
+        }
+
+    }
+
+
+    void InsertSort() {
+        for (int i = size-1; i >= 1; i--) {
+            for (int j = i; j >= 0; j--)
+            {
+                if (j == 0) break;
+                if (arr[j] < arr[j - 1]) {
+                    int s = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = s;
+                    Print();
+
+                }
             }
         }
     }
-}
 
 
-//void Swap(int* arr, int size) {
-//    int* help = new int[];
-//    if () {
-//
-//    }
-//
-//
-//}
+    void StackInsertSort() {
+        int help = size - 1;
+        for (int i = 0; i <=size; i++) {
+            for (int j = help; j >= 0; j--)
+            {
+                if (j == 0) break;
 
-void StackInsertSort(int* arr, int size) {
-    int* help = new int[size];
-
-    if (arr[size - 1] < arr[size - 2]) {
-        int n = Pop(arr, size);
-        int m = Pop(arr, size);
-        Push(arr, size, n);
-        Push(help, size, m);
+                if (arr[j] < arr[j - 1]) 
+                    Swap(j-1);
+            }
+        }
     }
 
-    delete[] help;
-}
 
-
-
-
+};
 
 int main()
 {
 
-
-    int size, a;
+    int size;
     cin >> size;
-    int* arr = new int[size];
-    int* help_arr = arr;
-    int helpsz = size;
 
-    for (int i = 0; i < size; i++)
-    {
-        cin >> arr[i];
-    }
+    Stack st(size);
+    cout << "array input: ";
+    st.Fill(size);
+    st.Print();
+    st.StackInsertSort();
+    cout << "sorted array: ";
+    st.Print();
 
-
-    
-    //for (int i = size-1; i > 0; --i)
-    //{
-    //    if (arr[i] < arr[i-1]) {
-    //        int n = Pop(arr, size);
-    //        int m = Pop(arr, size);
-    //        Add(help_arr, helpsz, m);
-    //        int n_sz = size--;
-    //        Push(arr, n_sz, n);
-
-    //    }
-    //    
-    //    if (arr[i] < arr[i - 1]) {
-    //        int n = Pop(arr, size);
-    //        Add(help_arr, size, n);
-    //    }
-    //    
-
-
-    //}
-
-    PrintArray(arr, size);
-    cout << "\n";
-    PrintArray(help_arr, size);
-   
-    delete[] arr;
     cin.get();
     cin.get();
-
-
 
 }
